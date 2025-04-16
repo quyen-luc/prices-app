@@ -38,6 +38,7 @@ class LocalDatabase {
             database: path.join(userDataPath, 'product-database.db'),
             entities: [product_entity_1.ProductEntity],
             synchronize: true,
+            dropSchema: true,
             logging: process.env.NODE_ENV === 'development',
         };
     }

@@ -41,7 +41,7 @@ export class ExcelService {
       if (!result.canceled && result.filePaths.length > 0) {
         const filePath = result.filePaths[0];
 
-        const fileName = this.extractFileNameWithoutExtension(filePath);
+        const fileName = this.extractFileNameWithoutExtension(filePath as string);
         // Check if price list already exists
         const priceListExists = await this.electronService.ipcRenderer.invoke(
           'check-price-list-exists',
@@ -69,7 +69,7 @@ export class ExcelService {
         }
 
         // Process the data
-        const products = this.processExcelData(excelData.data, fileName);
+        const products = this.processExcelData(excelData.data as any[], fileName);
         this.loadingService.hide();
         return products;
       } else {
@@ -166,7 +166,7 @@ export class ExcelService {
       );
     }
 
-    return parseFloat(priceValue) || 0;
+    return parseFloat(priceValue as string) || 0;
   }
 
   /**

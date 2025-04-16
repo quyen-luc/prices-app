@@ -10,6 +10,7 @@ import {
 import connectionMonitorService, { ConnectionMonitor } from './service/connection-monitor.service';
 import productSyncService from './service/product-sync.service';
 import { AppIdentityService } from './config/app-identity.service';
+import firstRunService from './service/first-run.service';
 
 
 let win: BrowserWindow | null = null;
@@ -77,6 +78,7 @@ async function createWindow(): Promise<BrowserWindow> {
 
   // Initialize product sync service
   productSyncService.init(win);
+  firstRunService.init(win);
 
   // Emitted when the window is closed.
   win.on('closed', () => {
@@ -85,6 +87,7 @@ async function createWindow(): Promise<BrowserWindow> {
     // when you should delete the corresponding element.
     connectionMonitorService.stop();
     productSyncService.stop();
+    firstRunService.stop();
     win = null;
   });
 

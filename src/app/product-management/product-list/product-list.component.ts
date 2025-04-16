@@ -87,27 +87,21 @@ export class ProductListComponent implements OnInit, OnDestroy {
       cellEditor: TextCellEditorComponent,
     },
     {
-      field: 'itemName',
-      headerName: 'Item Name',
-      sortable: true,
-      editable: true,
-      cellEditor: TextCellEditorComponent,
-    },
-    {
       field: 'licenseAgreementType',
-      headerName: 'License Agreement',
+      headerName: 'License Agreement Type Name',
       editable: true,
       cellEditor: TextCellEditorComponent,
     },
     {
       field: 'programName',
-      headerName: 'Program',
+      headerName: 'Program Name',
       editable: true,
       cellEditor: TextCellEditorComponent,
     },
+    
     {
       field: 'offeringName',
-      headerName: 'Offering',
+      headerName: 'Offering Name',
       editable: true,
       cellEditor: TextCellEditorComponent,
     },
@@ -118,12 +112,17 @@ export class ProductListComponent implements OnInit, OnDestroy {
       cellEditor: TextCellEditorComponent,
     },
     {
-      field: 'netPrice',
-      headerName: 'Net Price',
-      sortable: true,
+      field: 'purchaseUnit',
+      headerName: 'Purchase Unit',
       editable: true,
-      cellEditor: NumericCellEditorComponent,
-      valueFormatter: (params) => `${params.value?.toFixed(2) || '0.00'}`,
+      cellEditor: TextCellEditorComponent,
+    },
+
+    {
+      field: 'purchasePeriod',
+      headerName: 'Purchase Period',
+      editable: true,
+      cellEditor: TextCellEditorComponent,
     },
     {
       field: 'productFamily',
@@ -136,36 +135,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
       headerName: 'Product Type',
       editable: true,
       cellEditor: TextCellEditorComponent,
-    },
-    {
-      field: 'currencyCode',
-      headerName: 'Currency',
-      editable: true,
-      cellEditor: TextCellEditorComponent,
-    },
-    {
-      field: 'purchaseUnit',
-      headerName: 'Purchase Unit',
-      editable: true,
-      cellEditor: TextCellEditorComponent,
-    },
-    {
-      field: 'purchasePeriod',
-      headerName: 'Period',
-      editable: true,
-      cellEditor: TextCellEditorComponent,
-    },
-    {
-      field: 'isModifiedLocally',
-      headerName: 'Sync Status',
-      editable: false,
-      cellRenderer: (params) => {
-        if (params.value) {
-          return `<span class="badge-pending">Pending Sync</span>`;
-        } else {
-          return `<span class="badge-synced">Synced</span>`;
-        }
-      },
     },
     {
       field: 'changeDate',
@@ -181,6 +150,40 @@ export class ProductListComponent implements OnInit, OnDestroy {
           hour: '2-digit',
           minute: '2-digit',
         });
+      },
+    },
+    {
+      field: 'netPrice',
+      headerName: 'Net Price',
+      sortable: true,
+      editable: true,
+      cellEditor: NumericCellEditorComponent,
+      valueFormatter: (params) => `${params.value?.toFixed(2) || '0.00'}`,
+    },
+    {
+      field: 'itemName',
+      headerName: 'Item Name',
+      sortable: true,
+      editable: true,
+      cellEditor: TextCellEditorComponent,
+    },
+    {
+      field: 'currencyCode',
+      headerName: 'Currency',
+      editable: true,
+      cellEditor: TextCellEditorComponent,
+    },
+
+    {
+      field: 'isModifiedLocally',
+      headerName: 'Sync Status',
+      editable: false,
+      cellRenderer: (params) => {
+        if (params.value) {
+          return `<span class="badge-pending">Pending Sync</span>`;
+        } else {
+          return `<span class="badge-synced">Synced</span>`;
+        }
       },
     },
     {

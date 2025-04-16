@@ -1,11 +1,9 @@
 {
-  "name": "angular-electron",
+  "name": "Prices-app",
   "version": "14.0.1",
-  "description": "Angular 17 with Electron 30 (Typescript + SASS + Hot Reload)",
-  "homepage": "https://github.com/maximegris/angular-electron",
+  "description": "Prices management application",
   "author": {
-    "name": "Maxime GRIS",
-    "email": "maxime.gris@gmail.com"
+    "name": "Saigon Technology"
   },
   "keywords": [
     "angular",
@@ -37,7 +35,7 @@
     "electron:serve-tsc": "tsc -p tsconfig.serve.json",
     "electron:serve": "wait-on tcp:4200 && npm run electron:serve-tsc && electron . --serve",
     "electron:local": "npm run build:prod && electron .",
-    "electron:build": "npm run build:prod && electron-builder -mwl --publish=never",
+    "electron:build": "npm run build:prod && electron-builder build --publish=never",
     "test": "ng test --watch=false",
     "test:watch": "ng test",
     "e2e": "npm run build:prod && playwright test -c e2e/playwright.config.ts e2e/",
@@ -65,7 +63,7 @@
     "pg": "8.14.1",
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.1",
-    "tslib": "2.6.2",
+    "tslib": "2.6.2", 
     "typeorm": "0.3.22",
     "uuid": "11.1.0",
     "xlsx": "0.18.5",

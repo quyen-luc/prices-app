@@ -1,5 +1,6 @@
 {
   "asar": true,
+  "name": "Prices Management",
   "directories": {
     "output": "release/",
     "buildResources": "dist"

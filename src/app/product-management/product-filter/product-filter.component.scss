@@ -1,6 +1,6 @@
 /* filepath: c:\Users\quyen.luc\Documents\prices-app\src\app\product-management\product-filter\product-filter.component.scss */
 .filter-container {
-  background-color: #f8f9fa;
+  background-color: #0d6efd;
   border-radius: 0.25rem;
   padding: 0.75rem;
   margin-bottom: 1rem;
@@ -47,7 +47,7 @@
     margin-bottom: 0.25rem;
     font-size: 0.813rem;
     font-weight: 500;
-    color: #495057;
+    color: #fff;
   }
 }
 
@@ -64,13 +64,13 @@
     font-weight: 500;
     
     &.btn-primary {
-      background-color: #0d6efd;
-      border-color: #0d6efd;
+      background-color: #ffa500;
+      border-color: #ffa500;
       color: white;
       
       &:hover {
-        background-color: #0b5ed7;
-        border-color: #0a58ca;
+        background-color: #d88d02;
+        border-color: #d88d02;
       }
     }
     

@@ -51,7 +51,7 @@ export class SyncStatusNotificationComponent implements OnInit {
       this.pendingUploads$,
       this.pendingDownloads$
     ]).pipe(
-      map(([uploads, downloads]) => uploads > 0 || downloads > 0)
+      map(([uploads, downloads]) => uploads >= 0 || downloads >= 0)
     );
     
     this.showNotification$ = combineLatest([

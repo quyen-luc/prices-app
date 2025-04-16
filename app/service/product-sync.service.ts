@@ -139,7 +139,6 @@ export class ProductSyncService {
             [this.appId, lastSyncedAt]
           );
 
-
           pendingDownloads = parseInt(remoteResult[0].count, 10);
 
           // Also count deleted products not yet synced
@@ -227,7 +226,6 @@ export class ProductSyncService {
         remoteDataSource
       );
 
-      
       uploadedCount += await this.uploadDeletedProducts(
         localDb,
         remoteDataSource
@@ -397,6 +395,8 @@ export class ProductSyncService {
     this.stopAutoSync();
   }
 
+
+
   /**
    * Upload modified products to remote database using bulk operations
    * @param localDb Local database connection
@@ -497,7 +497,6 @@ export class ProductSyncService {
           ];
 
           await this.markProductsAsSynced(remoteDataSource, processedIds);
-          
         }
 
         // 10. Mark all processed products as synced locally in bulk
@@ -916,7 +915,7 @@ export class ProductSyncService {
           await this.bulkInsertProductsLocal(localDb, productsToInsert);
           downloadedCount += productsToInsert.length;
           console.log(`Bulk inserted ${productsToInsert.length} new products`);
-            
+
           this.notifySyncStatus({
             status: 'inprogress',
             direction: 'download',

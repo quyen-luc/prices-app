@@ -138,14 +138,24 @@ export class AutocompleteDropdownComponent
       return;
     }
 
+
+    const itemMap = new Map<string, boolean>();
     // Process the pasted text - split by newlines, tabs, commas, or multiple spaces
     const items = pastedText
       .split(/[\n\r\t,]+|\s{2,}/)
       .map((item) => item.trim())
       .filter((item) => item.length > 0);
 
+    items.forEach((item) => {
+      // Check if the item is already selected
+      if (!itemMap.has(item)) {
+        itemMap.set(item, true);
+      }
+    })
+      
+
     // Add unique items that don't already exist in the selection
-    const newItems = items.filter((item) => !this.selectedItems.includes(item));
+    const newItems = Array.from(itemMap.keys()).filter((item) => !this.selectedItems.includes(item));
 
     if (newItems.length > 0) {
       // Add new items to selection

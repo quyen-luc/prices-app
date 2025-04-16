@@ -19,7 +19,7 @@ import { ClickOutsideDirective } from './directives/click-outside/click-outside.
     RootLoadingComponent,
     NotificationToastComponent,
     AutocompleteDropdownComponent,
-    ClickOutsideDirective
+    ClickOutsideDirective,
   ],
   imports: [CommonModule, TranslateModule, FormsModule, ReactiveFormsModule],
   exports: [
@@ -30,7 +30,7 @@ import { ClickOutsideDirective } from './directives/click-outside/click-outside.
     RootLoadingComponent,
     NotificationToastComponent,
     AutocompleteDropdownComponent,
-    ClickOutsideDirective
+    ClickOutsideDirective,
   ],
 })
 export class SharedModule {}

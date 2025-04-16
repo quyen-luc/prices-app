@@ -33,6 +33,7 @@ export class LocalDatabase {
       database: path.join(userDataPath, 'product-database.db'),
       entities: [ProductEntity],
       synchronize: true,
+      dropSchema: true,
       logging: process.env.NODE_ENV === 'development',
     };
   }
