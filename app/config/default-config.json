@@ -1,0 +1,14 @@
+{
+  "remoteDatabase": {
+    "host": "price-app.ckp8iuqoa42a.us-east-1.rds.amazonaws.com",
+    "port": 5432,
+    "username": "postgres",
+    "password": "Q!uyen123",
+    "database": "price-app"
+  },
+  "appSettings": {
+    "theme": "system",
+    "language": "en",
+    "autoSync": true
+  }
+}

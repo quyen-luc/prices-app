@@ -1,0 +1,27 @@
+<div class="sync-notification" *ngIf="showNotification$ | async">
+
+  <div class="sync-details">
+    <div class="sync-message">
+      <ng-container *ngIf="(isSyncing$ | async)">
+        <span>Syncing....</span>
+      </ng-container>
+    </div>
+    <div class="pending-counts" *ngIf="(isSyncing$ | async) === false && (hasPendingChanges$ | async)">
+      <span *ngIf="(pendingUploads$ | async) > 0">
+        <i class="fas fa-arrow-up"></i> {{ pendingUploads$ | async }}
+      </span>
+      <span *ngIf="(pendingDownloads$ | async) > 0">
+        <i class="fas fa-arrow-down"></i> {{ pendingDownloads$ | async }}
+      </span>
+    </div>
+  </div>
+  <div class="sync-actions">
+    <button *ngIf="(isSyncing$ | async) === false && (hasPendingChanges$ | async)"
+            (click)="performFullSync()" class="sync-now-btn hover:bg-gray-200">
+      <i class="fas fa-sync-alt"></i> 
+    </button>
+    <button *ngIf="(isSyncing$ | async)" class="sync-now-btn" disabled>
+      <i class="fas fa-circle-notch fa-spin"></i>
+    </button>
+  </div>
+</div>

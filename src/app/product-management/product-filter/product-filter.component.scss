@@ -1,0 +1,108 @@
+/* filepath: c:\Users\quyen.luc\Documents\prices-app\src\app\product-management\product-filter\product-filter.component.scss */
+.filter-container {
+  background-color: #f8f9fa;
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  
+  h3 {
+    font-size: 1rem;
+    margin: 0;
+    font-weight: 600;
+    color: #495057;
+  }
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  
+  .form-group {
+    flex: 1;
+    min-width: 150px;
+  }
+  
+  // Make the Part Number and Item Name larger in the second row
+  .part-number, .item-name {
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
+.form-group {
+  margin-bottom: 0.5rem;
+  
+  label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.813rem;
+    font-weight: 500;
+    color: #495057;
+  }
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  
+  .btn {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 0.2rem;
+    font-weight: 500;
+    
+    &.btn-primary {
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+      color: white;
+      
+      &:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+      }
+    }
+    
+    &.btn-secondary {
+      background-color: #6c757d;
+      border-color: #6c757d;
+      color: white;
+      
+      &:hover {
+        background-color: #5c636a;
+        border-color: #565e64;
+      }
+    }
+  }
+}
+
+// Make the form more compact on larger screens
+@media (min-width: 992px) {
+  .filter-row {
+    .form-group {
+      flex-basis: 0;
+    }
+  }
+}
+
+// For smaller screens, stack the form groups
+@media (max-width: 768px) {
+  .filter-row {
+    flex-direction: column;
+    
+    .form-group {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,12 @@
+<div class="actions bg-gray-100">
+  <button
+    class="hover:border-2 font-bold px-4 mr-2"
+    (click)="importFromExcel()"
+    [disabled]="importInProgress"
+  >
+    <span>Import</span>
+  </button>
+  <button class="hover:border-2 font-bold px-4 mr-2" (click)="exportProducts()">
+    <span>Export</span>
+  </button>
+</div>

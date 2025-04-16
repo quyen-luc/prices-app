@@ -1,0 +1,9 @@
+<div class="spinner-overlay" 
+     [class.show]="show" 
+     [class.transparent]="transparent"
+     [class.fullscreen]="fullscreen">
+  <div class="spinner-container" [ngClass]="size">
+    <div class="spinner"></div>
+    <div class="spinner-message" *ngIf="message">{{ message }}</div>
+  </div>
+</div>

@@ -1,0 +1,80 @@
+<div class="filter-container">
+
+    
+    <form [formGroup]="filterForm">
+      <!-- First row: Program Name, License Agreement Types, Levels, Currency -->
+      <div class="filter-row">
+        <div class="form-group">
+          <label for="programName">Program Name</label>
+          <app-autocomplete-dropdown
+            formControlName="programName"
+            [itemsLoader]="loadProgramNames"
+            [clearable]="true"
+            placeholder="Select Program Name">
+          </app-autocomplete-dropdown>
+        </div>
+        
+        <div class="form-group">
+          <label for="licenseAgreementTypes">License Types</label>
+          <app-autocomplete-dropdown
+            formControlName="licenseAgreementTypes"
+            [itemsLoader]="loadLicenseTypes"
+            [clearable]="true"
+            placeholder="Select License Types">
+          </app-autocomplete-dropdown>
+        </div>
+        
+        <div class="form-group">
+          <label for="levels">Levels</label>
+          <app-autocomplete-dropdown
+            formControlName="levels"
+            [itemsLoader]="loadLevels"
+            [clearable]="true"
+            placeholder="Select Levels">
+          </app-autocomplete-dropdown>
+        </div>
+        
+        <div class="form-group">
+          <label for="currencyCode">Currency</label>
+          <app-autocomplete-dropdown
+            formControlName="currencyCode"
+            [itemsLoader]="loadCurrencyCodes"
+            [clearable]="true"
+            placeholder="Select Currency">
+          </app-autocomplete-dropdown>
+        </div>
+      </div>
+      
+      <!-- Second row: Part Number and Item Name -->
+      <div class="filter-row">
+        <div class="form-group part-number">
+          <label for="partNumber">Part Number</label>
+          <app-autocomplete-dropdown
+            formControlName="partNumber"
+            [itemsLoader]="loadPartNumbers"
+            [multiple]="true"
+            [clearable]="true"
+            [allowBulkPaste]="true"
+            placeholder="Search Part Numbers">
+          </app-autocomplete-dropdown>
+        </div>
+        
+        <div class="form-group item-name">
+          <label for="itemName">Item Name</label>
+          <app-autocomplete-dropdown
+            formControlName="itemName"
+            [itemsLoader]="loadItemNames"
+            [multiple]="true"
+            [allowBulkPaste]="true"
+            [clearable]="true"
+            placeholder="Search Item Names">
+          </app-autocomplete-dropdown>
+        </div>
+      </div>
+      
+      <div class="filter-actions">
+        <button type="button" class="btn btn-secondary" (click)="resetFilters()">Reset</button>
+        <button type="button" class="btn btn-primary" (click)="applyFilters()">Apply Filters</button>
+      </div>
+    </form>
+  </div>

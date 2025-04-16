@@ -1,0 +1,61 @@
+<div class="autocomplete-container" [class.disabled]="disabled" (clickOutside)="onClickOutside($event)">
+  <!-- Main input area that also serves as search -->
+  <div class="autocomplete-input" [class.multiple-selection]="multiple">
+    <!-- For multiple selection, show chips inline with input -->
+    <ng-container *ngIf="multiple">
+      <div *ngFor="let item of selectedItems" class="selected-chip">
+        <span class="chip-label">{{ item }}</span>
+        <span class="chip-remove" (click)="removeItem(item, $event)">&times;</span>
+      </div>
+    </ng-container>
+    
+    <!-- Input field for both display and search -->
+    <div class="input-wrapper">
+      <input [formControl]="searchControl"
+             type="text"
+             [placeholder]="placeholder"
+             [disabled]="disabled"
+             (focus)="onInputFocus()"
+             (paste)="onPaste($event)"
+             (click)="$event.stopPropagation()">
+    </div>
+      
+    <!-- Actions (clear button and dropdown indicator) -->
+    <div class="autocomplete-actions">
+      <span *ngIf="clearable && (selectedItems.length > 0 || searchControl.value)" 
+            class="clear-button" 
+            (click)="clearAll($event)">
+        &times;
+      </span>
+      <span class="dropdown-indicator" [class.open]="isDropdownOpen" (click)="toggleDropdown($event)">
+        <i class="chevron-down"></i>
+      </span>
+    </div>
+  </div>
+  
+  <!-- Dropdown container -->
+  <div *ngIf="isDropdownOpen" class="dropdown-container">
+    <!-- Options list -->
+    <div class="options-container" [style.max-height]="maxHeight">
+      <!-- Loading indicator -->
+      <div *ngIf="loading" class="loading-indicator">
+        <div class="spinner"></div>
+        <span>Loading...</span>
+      </div>
+      
+      <!-- Options list -->
+      <div *ngIf="!loading" class="options-list">
+        <div *ngFor="let option of filteredOptions$ | async" 
+             class="option-item"
+             (click)="selectItem(option)">
+          {{ option }}
+        </div>
+        
+        <!-- Empty state -->
+        <div *ngIf="(filteredOptions$ | async)?.length === 0" class="no-results">
+          No results found
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

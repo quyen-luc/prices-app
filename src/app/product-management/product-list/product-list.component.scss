@@ -1,0 +1,247 @@
+/* filepath: c:\Users\quyen.luc\Documents\prices-app\src\app\product-management\product-list\product-list.component.scss */
+.product-management-container {
+  padding: 20px;
+  padding-top: 0;
+  position: relative;
+  height: 95vh;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .sync-status {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+
+      .last-sync {
+        font-size: 12px;
+        color: #666;
+        margin-bottom: 5px;
+      }
+
+      .sync-actions {
+        display: flex;
+        gap: 10px;
+      }
+    }
+  }
+
+  .tools {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+
+    .search {
+      flex: 1;
+      max-width: 400px;
+
+      input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+
+        &:focus {
+          outline: none;
+          border-color: #4a90e2;
+          box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+      }
+    }
+  }
+
+  .grid-container {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    height: 60%;
+  }
+
+  .loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    .spinner-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(74, 144, 226, 0.2);
+        border-radius: 50%;
+        border-top-color: #4a90e2;
+        animation: spin 1s ease-in-out infinite;
+        margin-bottom: 10px;
+      }
+
+      span {
+        color: #666;
+      }
+    }
+  }
+
+  .badge-pending {
+    background-color: #ffc107;
+    color: #212529;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+  }
+
+  .badge-synced {
+    background-color: #28a745;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+  }
+
+  .btn-sync,
+  .btn-pull,
+  .btn-new {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+    }
+  }
+
+  .btn-sync {
+    background-color: #4a90e2;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background-color: #3a7bc8;
+    }
+  }
+
+  .btn-pull {
+    background-color: #6c757d;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background-color: #5a6268;
+    }
+  }
+
+  .btn-new {
+    background-color: #28a745;
+    color: white;
+
+    &:hover {
+      background-color: #218838;
+    }
+  }
+
+  .btn-edit,
+  .btn-delete {
+    padding: 2px 8px;
+    border: none;
+    border-radius: 3px;
+    margin-right: 5px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .btn-edit {
+    background-color: #4a90e2;
+    color: white;
+
+    &:hover {
+      background-color: #3a7bc8;
+    }
+  }
+
+  .btn-delete {
+    background-color: #dc3545;
+    color: white;
+
+    &:hover {
+      background-color: #c82333;
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.items-per-page-container {
+  display: flex;
+  align-items: center;
+  margin-right: 16px;
+
+  .items-label {
+    font-size: 12px;
+    color: #666;
+    margin-right: 6px;
+    white-space: nowrap;
+  }
+
+  .items-select {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 4px 8px;
+    padding-right: 24px; // Space for the dropdown arrow
+    font-size: 12px;
+    min-width: 60px;
+    height: 28px;
+    cursor: pointer;
+
+    // Make sure the arrow appears
+    appearance: menulist;
+    -webkit-appearance: menulist;
+    -moz-appearance: menulist;
+
+    &:focus {
+      outline: none;
+      border-color: #4a90e2;
+      box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+    }
+
+    option {
+      padding: 4px;
+      font-size: 12px;
+    }
+  }
+}

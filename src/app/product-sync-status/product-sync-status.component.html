@@ -1,0 +1,178 @@
+<div class="bg-white rounded-lg shadow-md overflow-hidden">
+  <div class="p-4 border-b">
+    <div class="flex justify-between items-center">
+      <h3 class="text-lg font-medium text-gray-900">Product Synchronization</h3>
+
+      <!-- Auto-sync toggle -->
+      <div class="flex items-center">
+        <span class="mr-2 text-sm text-gray-600">Auto-sync</span>
+        <button
+          type="button"
+          [class]="(autoSyncEnabled$ | async) ? 'bg-blue-600' : 'bg-gray-200'"
+          class="relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none"
+          (click)="toggleAutoSync()"
+        >
+          <span
+            [class]="
+              (autoSyncEnabled$ | async) ? 'translate-x-6' : 'translate-x-1'
+            "
+            class="inline-block w-4 h-4 transform bg-white rounded-full transition-transform"
+          ></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-4">
+    <!-- Sync status -->
+    <div class="flex items-center justify-between mb-4">
+      <div
+        *ngIf="isLoading$ | async; else syncingStatus"
+        class="flex items-center text-blue-600"
+      >
+        <svg
+          class="animate-spin -ml-1 mr-2 h-4 w-4"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+        <span> Loading Syncing Status... </span>
+      </div>
+      <ng-template #syncingStatus>
+        <div class="flex items-center">
+          <span class="text-sm text-gray-600 mr-2">Status:</span>
+          <div
+            *ngIf="isSyncing$ | async"
+            class="flex items-center text-blue-600"
+          >
+            <svg
+              class="animate-spin -ml-1 mr-2 h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <span>
+              <ng-container *ngIf="(syncDirection$ | async) === 'upload'"
+                >Uploading...</ng-container
+              >
+              <ng-container *ngIf="(syncDirection$ | async) === 'download'"
+                >Downloading...</ng-container
+              >
+              <ng-container *ngIf="(syncDirection$ | async) === 'full'"
+                >Full sync...</ng-container
+              >
+              <ng-container *ngIf="syncDirection$ | async"
+                >Syncing...</ng-container
+              >
+            </span>
+          </div>
+          <div
+            *ngIf="
+              (isSyncing$ | async) === false && ((pendingUploads$ | async) > 0 || (pendingDownloads$ | async) > 0)
+            "
+            class="text-yellow-600"
+          >
+            <span>
+              <ng-container *ngIf="(pendingUploads$ | async) > 0"
+                >{{ (pendingUploads$ | async) }} to upload</ng-container
+              >
+              <ng-container
+                *ngIf="(pendingUploads$ | async) > 0 && (pendingDownloads$ | async) > 0"
+              >
+                •
+              </ng-container>
+              <ng-container *ngIf="(pendingDownloads$ | async) > 0"
+                >{{ (pendingDownloads$ | async) }} to download</ng-container
+              >
+            </span>
+          </div>
+          <div
+            *ngIf="
+              (isSyncing$ | async) === false &&
+              (pendingUploads$ |async) === 0 &&
+              (pendingDownloads$ | async) === 0
+            "
+            class="text-green-600"
+          >
+            <span>Up to date</span>
+          </div>
+        </div>
+      </ng-template>
+
+      <!-- Last sync time -->
+      <div *ngIf="lastSyncTime$ | async" class="text-xs text-gray-500">
+        Last sync: {{ lastSyncTime$ | async | date : "short" }}
+      </div>
+    </div>
+
+    <!-- Sync error -->
+    <div
+      *ngIf="syncError$ | async"
+      class="mb-4 p-2 bg-red-100 text-red-800 rounded-md text-sm"
+    >
+      {{ syncError$ | async }}
+    </div>
+
+    <!-- Sync buttons -->
+    <div class="flex justify-end space-x-2">
+      <button
+        (click)="syncProducts()"
+        [disabled]="(isSyncing$ | async) || (pendingUploads$ | async) === 0"
+        class="px-3 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+      >
+        Upload ({{ pendingUploads$ | async }})
+      </button>
+
+      <button
+        (click)="pullProducts()"
+        [disabled]="(isSyncing$ | async) || (pendingDownloads$ | async) === 0"
+        class="px-3 py-2 bg-green-100 text-green-800 rounded-md hover:bg-green-200 transition-colors focus:outline-none focus:ring-2 focus:ring-green-300 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+      >
+        Download
+        <ng-container *ngIf="(pendingDownloads$ | async) > 0"
+          >({{ pendingDownloads$ | async }})</ng-container
+        >
+      </button>
+
+      <button
+        (click)="performFullSync()"
+        [disabled]="
+          (isSyncing$ | async) ||
+          (pendingUploads$ | async) === 0 ||
+          (pendingDownloads$ | async) === 0
+        "
+        class="px-3 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+      >
+        <ng-container> Two-Way Sync </ng-container>
+      </button>
+    </div>
+  </div>
+</div>

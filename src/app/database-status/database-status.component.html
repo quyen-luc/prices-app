@@ -1,0 +1,55 @@
+<div class="fixed bottom-4 right-4 z-50">
+  <!-- Database Status Indicator -->
+  <div *ngIf="!isDbConnected.value || isReconnecting.value || errorMessage.value" 
+       class="bg-white rounded-lg shadow-lg p-3 max-w-xs transition-all duration-300 transform hover:scale-105">
+    <div class="flex items-center space-x-2">
+      <!-- Status indicator dot -->
+      <div class="w-3 h-3 rounded-full animate-pulse"
+           [ngClass]="{
+             'bg-red-500': !isDbConnected.value && !isReconnecting.value,
+             'bg-yellow-500': isReconnecting.value,
+             'bg-gray-500': !isInternetConnected.value
+           }"></div>
+      
+      <!-- Status text -->
+      <span class="font-medium text-gray-800">
+        <ng-container *ngIf="!isInternetConnected.value">
+          No Internet Connection
+        </ng-container>
+        <ng-container *ngIf="isInternetConnected.value && isReconnecting.value">
+          Reconnecting to Database ({{reconnectAttempt.value}}/{{maxReconnectAttempts.value}})
+        </ng-container>
+        <ng-container *ngIf="isInternetConnected.value && !isReconnecting.value && !isDbConnected.value">
+          Database Disconnected
+        </ng-container>
+      </span>
+    </div>
+    
+    <!-- Error message if any -->
+    <div *ngIf="errorMessage.value" class="mt-2 text-sm text-red-600">
+      {{ errorMessage.value }}
+    </div>
+    
+    <!-- Reconnect button - only show if we have internet but DB is disconnected -->
+    <button *ngIf="isInternetConnected.value && !isDbConnected.value && !isReconnecting.value"
+            (click)="manualReconnect()"
+            class="mt-3 w-full px-3 py-1.5 text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 transition-colors">
+      Reconnect Now
+    </button>
+    
+    <!-- Reconnecting progress indicator -->
+    <div *ngIf="isReconnecting.value" class="mt-3">
+      <div class="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+        <div class="h-full bg-blue-500 rounded-full" 
+             [style.width.%]="(reconnectAttempt.value / maxReconnectAttempts.value) * 100"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Small indicator when everything is working fine -->
+  <div *ngIf="isDbConnected.value && !isReconnecting.value && !errorMessage.value"
+       class="bg-white rounded-full shadow-md p-1.5 transition-all duration-300 transform hover:scale-110 hover:shadow-lg cursor-pointer"
+       [title]="'Database: Connected'">
+    <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+  </div>
+</div>

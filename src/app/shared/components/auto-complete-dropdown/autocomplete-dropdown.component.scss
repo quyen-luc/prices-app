@@ -1,0 +1,251 @@
+// General container styling
+.autocomplete-container {
+  position: relative;
+  width: 100%;
+  font-family: inherit;
+  
+  &.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+// Main input container - REDUCED HEIGHT
+.autocomplete-input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  min-height: 30px; // Reduced from 38px
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  background-color: #fff;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  padding: 0.15rem; // Reduced padding
+  
+  &:hover {
+    border-color: #adb5bd;
+  }
+  
+  &:focus-within {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.2); // Smaller shadow
+  }
+  
+  // Styling for multiple selection mode
+  &.multiple-selection {
+    gap: 3px; // Reduced gap
+    padding: 0.15rem 0.25rem; // Reduced padding
+  }
+}
+
+// Styling for selected chips/tags in multiple mode - SMALLER SIZE
+.selected-chip {
+  display: inline-flex;
+  align-items: center;
+  background-color: #e9ecef;
+  padding: 0.1rem 0.4rem; // Reduced padding
+  border-radius: 0.8rem; // Slightly smaller radius
+  font-size: 0.75rem; // Smaller font
+  max-width: 180px;
+  margin: 0.1rem 0.15rem 0.1rem 0; // Reduced margins
+  border: 1px solid #ddd;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: #dee2e6;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  
+  .chip-label {
+    margin-right: 4px; // Reduced margin
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .chip-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #6c757d;
+    font-size: 0.875rem; // Smaller font
+    font-weight: 700;
+    width: 14px; // Smaller size
+    height: 14px; // Smaller size
+    line-height: 1;
+    border-radius: 50%;
+    
+    &:hover {
+      color: #212529;
+      background-color: #ced4da;
+    }
+  }
+}
+
+// Input wrapper styling - SMALLER HEIGHT
+.input-wrapper {
+  display: flex;
+  flex: 1;
+  min-width: 100px;
+  position: relative;
+  
+  input {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 0.3rem 0.25rem; // Reduced padding
+    font-size: 0.875rem; // Smaller font
+    background: transparent;
+    
+    &::placeholder {
+      color: #6c757d;
+    }
+  }
+}
+
+// Actions (clear button and dropdown indicator) - SMALLER SIZE
+.autocomplete-actions {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  
+  .clear-button {
+    cursor: pointer;
+    margin-right: 6px; // Reduced margin
+    color: #6c757d;
+    font-size: 1rem; // Smaller font
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &:hover {
+      color: #495057;
+    }
+  }
+  
+  .dropdown-indicator {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+    padding: 0.2rem; // Reduced padding
+    
+    &.open {
+      transform: rotate(180deg);
+    }
+    
+    .chevron-down {
+      display: inline-block;
+      width: 7px; // Smaller chevron
+      height: 7px; // Smaller chevron
+      border-right: 2px solid #6c757d;
+      border-bottom: 2px solid #6c757d;
+      transform: rotate(45deg);
+    }
+  }
+}
+
+// Dropdown container styling - CLOSER TO INPUT
+.dropdown-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  margin-top: 3px; // Reduced margin
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  background-color: #fff;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12); // Smaller shadow
+  z-index: 1000;
+  overflow: hidden;
+}
+
+// Options container - SLIGHTLY SMALLER MAX HEIGHT
+.options-container {
+  overflow-y: auto;
+  max-height: 220px; // Reduced from 250px
+}
+
+// Options list styling - SMALLER PADDING
+.options-list {
+  .option-item {
+    padding: 0.35rem 0.5rem; // Reduced padding
+    cursor: pointer;
+    transition: background-color 0.15s;
+    font-size: 0.875rem; // Smaller font
+    
+    &:hover {
+      background-color: #f8f9fa;
+    }
+    
+    &:active {
+      background-color: #e9ecef;
+    }
+  }
+}
+
+// No results message - SMALLER PADDING
+.no-results {
+  padding: 0.5rem; // Reduced padding
+  color: #6c757d;
+  text-align: center;
+  font-style: italic;
+  font-size: 0.813rem; // Smaller font
+}
+
+// Loading indicator - SMALLER SIZE
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem; // Reduced padding
+  color: #6c757d;
+  font-size: 0.875rem; // Smaller font
+  
+  .spinner {
+    width: 16px; // Smaller spinner
+    height: 16px; // Smaller spinner
+    margin-right: 6px; // Reduced margin
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Multiple selection with chips above input - SMALLER SPACING
+.multiple-with-chips {
+  .selected-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px; // Reduced gap
+    margin-bottom: 0.2rem; // Reduced margin
+  }
+  
+  .input-row {
+    display: flex;
+    width: 100%;
+    align-items: center;
+  }
+}
+
+// For bulk paste feature hint
+.bulk-paste-hint {
+  position: absolute;
+  right: 8px;
+  top: -18px;
+  font-size: 0.7rem;
+  color: #6c757d;
+  background-color: #f8f9fa;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  border: 1px solid #ced4da;
+  opacity: 0.8;
+}

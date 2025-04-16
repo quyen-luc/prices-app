@@ -1,0 +1,155 @@
+<div class="dialog-content">
+  <div class="dialog-header">
+    <h2>Import Products from Excel</h2>
+    <button class="dialog-close" (click)="closeDialog()" aria-label="Close">
+      ×
+    </button>
+  </div>
+
+  <div class="dialog-body">
+    <!-- Update your progress section -->
+
+    <div class="import-progress" *ngIf="importInProgress">
+      <div class="progress-bar-container">
+        <div class="progress-bar">
+          <div class="progress-bar-fill" [style.width.%]="importProgress"></div>
+        </div>
+        <div class="progress-text">{{ importProgress }}% complete</div>
+      </div>
+      <p class="progress-message">Importing products. Please wait...</p>
+    </div>
+
+    <div class="import-stats" *ngIf="importStats.totalProducts">
+      <p>
+        Processing
+        {{ importStats.importedCount + importStats.failedCount }} of
+        {{ importStats.totalProducts }} products ({{
+          importStats.importedCount
+        }}
+        imported, {{ importStats.failedCount }} failed)
+      </p>
+    </div>
+
+    <button
+      *ngIf="importCancellable"
+      class="btn-cancel-import"
+      (click)="cancelImport()"
+    >
+      Cancel Import
+    </button>
+
+    <div
+      class="import-preview p-3"
+      *ngIf="importedProducts.length && !importSuccess"
+    >
+      <div class="preview-header">
+        <h3>Preview: {{ importedProducts.length }} products found</h3>
+      </div>
+
+      <div class="preview-table-container">
+        <table class="preview-table">
+          <thead>
+            <tr>
+              <th>Part Number</th>
+              <th>Item Name</th>
+              <th>License Agreement</th>
+              <th>Program Name</th>
+              <th>Offering</th>
+              <th>Level</th>
+              <th>Net Price</th>
+              <th>Product Family</th>
+              <th>Currency</th>
+              <th>Purchase Unit</th>
+              <th>Period</th>
+              <th>Change Date</th>
+              <th>Price List</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of importedProducts.slice(0, 10)">
+              <td>{{ product.partNumber }}</td>
+              <td>{{ product.itemName }}</td>
+              <td>{{ product.licenseAgreementType }}</td>
+              <td>{{ product.programName }}</td>
+              <td>{{ product.offeringName }}</td>
+              <td>{{ product.level }}</td>
+              <td>{{ product.netPrice }}</td>
+              <td>{{ product.productFamily }}</td>
+              <td>{{ product.currencyCode }}</td>
+              <td>{{ product.purchaseUnit }}</td>
+              <td>{{ product.purchasePeriod }}</td>
+              <td>{{ product.changeDate }}</td>
+              <td>{{ product.priceListId }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="preview-note" *ngIf="importedProducts.length > 10">
+    <p>Showing 10 of {{ importedProducts.length }} products</p>
+  </div>
+
+  <div class="import-result" *ngIf="importSuccess">
+    <div class="success-message">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+      <h3>Import Successful!</h3>
+      <p>Successfully imported {{ importedProducts.length }} products</p>
+      <button class="btn-primary" (click)="closeDialog()">Close</button>
+    </div>
+  </div>
+
+  <div class="import-error" *ngIf="importError">
+    <div class="error-message">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <h3>Import Error</h3>
+      <p>{{ importError }}</p>
+      <button class="btn-primary" (click)="resetState()">Try Again</button>
+    </div>
+  </div>
+
+  <div
+    class="dialog-footer"
+    *ngIf="importedProducts.length && !importSuccess && !importError"
+  >
+    <button class="btn-cancel" (click)="cancelImport()">Cancel</button>
+    <button
+      class="btn-confirm"
+      (click)="confirmImport()"
+      [disabled]="importInProgress"
+    >
+      <span *ngIf="!importInProgress">Import Products</span>
+      <span *ngIf="importInProgress" class="spinner-text">
+        <div class="spinner-inline"></div>
+        Importing...
+      </span>
+    </button>
+  </div>
+</div>

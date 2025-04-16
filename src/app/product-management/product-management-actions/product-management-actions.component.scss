@@ -1,0 +1,18 @@
+.actions {
+  border-radius: 30px;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 12px;
+
+  button {
+    &:first-child {
+      border-left: 0;
+      border-top: 0;
+    }
+
+    border-bottom: 0;
+    border-top: 0;
+  }
+}

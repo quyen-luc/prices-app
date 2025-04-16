@@ -1,0 +1,319 @@
+/* filepath: c:\Users\quyen.luc\Documents\prices-app\src\app\product-management\product-import\product-import.component.scss */
+:host {
+  display: block;
+}
+
+.dialog-content {
+  width: 800px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eaeaea;
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #2c3e50;
+  }
+
+  .dialog-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #95a5a6;
+    cursor: pointer;
+    padding: 0;
+
+    &:hover {
+      color: #7f8c8d;
+    }
+  }
+}
+
+.dialog-body {
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid #eaeaea;
+
+  .btn-cancel {
+    padding: 8px 16px;
+    background-color: #ecf0f1;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    color: #7f8c8d;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #e0e6e8;
+    }
+  }
+
+  .btn-confirm {
+    padding: 8px 16px;
+    background-color: #2ecc71;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #27ae60;
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
+}
+
+/* Import actions section */
+.import-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+
+  .btn-import {
+    padding: 12px 24px;
+    font-size: 16px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #2980b9;
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
+
+  .supported-formats {
+    margin-top: 24px;
+    text-align: center;
+
+    p {
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #34495e;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        color: #7f8c8d;
+        margin-bottom: 4px;
+        font-size: 14px;
+
+        &:before {
+          content: "✓";
+          color: #27ae60;
+          margin-right: 6px;
+        }
+      }
+    }
+  }
+}
+
+/* Preview table */
+.preview-table-container {
+  overflow-x: auto;
+  height: 500px;
+
+  .preview-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+
+
+    th,
+    td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ecf0f1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    th,
+    td {
+      width: 100px;
+    }
+
+    th {
+      background-color: #f8f9fa;
+      font-weight: 500;
+      color: #34495e;
+    }
+
+    tr:hover td {
+      background-color: #f5f7f8;
+    }
+
+    // Make Item Name column wider
+    th:nth-child(2),
+    td:nth-child(2) {
+      width: 250px; // Increase this value as needed
+    }
+
+    // You can also adjust other column widths if needed
+    // Part Number
+    th:nth-child(1),
+    td:nth-child(1) {
+      width: 120px;
+    }
+
+    // Net Price (to make it narrower)
+    th:nth-child(7),
+    td:nth-child(7) {
+      width: 80px;
+    }
+  }
+}
+
+.preview-note {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #95a5a6;
+  text-align: center;
+}
+
+/* Success and error messages */
+.import-result,
+.import-error {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+
+  .success-message,
+  .error-message {
+    text-align: center;
+
+    svg {
+      color: #2ecc71;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      margin: 0 0 8px 0;
+      font-size: 20px;
+      color: #2c3e50;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      color: #7f8c8d;
+    }
+
+    .btn-primary {
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #2980b9;
+      }
+    }
+  }
+
+  .error-message {
+    svg {
+      color: #e74c3c;
+    }
+  }
+}
+
+.spinner-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.spinner-inline {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* filepath: c:\Users\quyen.luc\Documents\prices-app\src\app\product-management\product-import\product-import.component.scss */
+/* Add this to your component's styles */
+
+.import-progress {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  margin: 20px 0;
+
+  .progress-bar-container {
+    margin-bottom: 10px;
+  }
+
+  .progress-bar {
+    height: 10px;
+    background-color: #e2e6ea;
+    border-radius: 5px;
+    overflow: hidden;
+
+    .progress-bar-fill {
+      height: 100%;
+      background-color: #3498db;
+      transition: width 0.3s ease;
+    }
+  }
+
+  .progress-text {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 14px;
+    color: #7f8c8d;
+  }
+
+  .progress-message {
+    text-align: center;
+    margin: 8px 0 0;
+    color: #34495e;
+    font-size: 14px;
+  }
+}
