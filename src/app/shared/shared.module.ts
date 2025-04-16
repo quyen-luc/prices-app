@@ -10,6 +10,7 @@ import { RootLoadingComponent } from './components/root-loading/root-loading.com
 import { NotificationToastComponent } from './components/notification-toast/notification-toast.component';
 import { AutocompleteDropdownComponent } from './components/auto-complete-dropdown/autocomplete-dropdown.component';
 import { ClickOutsideDirective } from './directives/click-outside/click-outside.directive';
+import { FirstRunDialogComponent } from './components/first-run-dialog/first-run-dialog.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { ClickOutsideDirective } from './directives/click-outside/click-outside.
     NotificationToastComponent,
     AutocompleteDropdownComponent,
     ClickOutsideDirective,
+    FirstRunDialogComponent
   ],
   imports: [CommonModule, TranslateModule, FormsModule, ReactiveFormsModule],
   exports: [
@@ -31,6 +33,7 @@ import { ClickOutsideDirective } from './directives/click-outside/click-outside.
     NotificationToastComponent,
     AutocompleteDropdownComponent,
     ClickOutsideDirective,
+    FirstRunDialogComponent
   ],
 })
 export class SharedModule {}

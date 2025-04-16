@@ -88,30 +88,30 @@ export class DialogService {
     const dialogContainer = document.createElement('div');
     dialogContainer.className = 'dialog-container';
 
-    // Add ESC key handler to close dialog
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        this.closeDialog();
-        afterClosedSubject.next(null);
-        afterClosedSubject.complete();
-      }
-    };
-    document.addEventListener('keydown', handleEscKey);
+    // // Add ESC key handler to close dialog
+    // const handleEscKey = (event: KeyboardEvent) => {
+    //   if (event.key === 'Escape') {
+    //     this.closeDialog();
+    //     afterClosedSubject.next(null);
+    //     afterClosedSubject.complete();
+    //   }
+    // };
+    // document.addEventListener('keydown', handleEscKey);
 
     // Store reference for closing
     this.dialogComponentRef = componentRef;
-    this.dialogComponentRef.onDestroy(() => {
-      document.removeEventListener('keydown', handleEscKey);
-    });
+    // this.dialogComponentRef.onDestroy(() => {
+    //   document.removeEventListener('keydown', handleEscKey);
+    // });
 
     // Add click handler to backdrop for closing
-    backdropElement.addEventListener('click', (event) => {
-      if (event.target === backdropElement) {
-        this.closeDialog();
-        afterClosedSubject.next(null);
-        afterClosedSubject.complete();
-      }
-    });
+    // backdropElement.addEventListener('click', (event) => {
+    //   if (event.target === backdropElement) {
+    //     this.closeDialog();
+    //     afterClosedSubject.next(null);
+    //     afterClosedSubject.complete();
+    //   }
+    // });
 
     // Append elements to DOM
     dialogContainer.appendChild(domElem);

@@ -272,10 +272,45 @@ class ProductSyncService {
                     ? new Date(new Date(lastSyncResult.lastSync).getTime() - 60000) // Subtract 1 minute
                     : new Date(0); // Jan 1, 1970 - will get all products
                 console.log(`Using last sync time: ${lastSyncedAt}`);
-                // Process updated and deleted products
-                const updatedCount = yield this.pullUpdatedProducts(localDb, remoteDataSource, lastSyncedAt);
-                const deletedCount = yield this.pullDeletedProducts(localDb, remoteDataSource, lastSyncedAt);
-                const totalDownloaded = updatedCount + deletedCount;
+                // Send initial progress update - starting with 0 items
+                if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+                    this.mainWindow.webContents.send('sync-progress-update', {
+                        count: 0,
+                        total: null,
+                    });
+                }
+                // Track total downloaded items for progress updates
+                let totalDownloaded = 0;
+                // Process updated products
+                const updatedCount = yield this.pullUpdatedProducts(localDb, remoteDataSource, lastSyncedAt, (downloadedBatch) => {
+                    // Progress callback for updated products
+                    totalDownloaded += downloadedBatch;
+                    if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+                        this.mainWindow.webContents.send('sync-progress-update', {
+                            count: totalDownloaded,
+                            total: null,
+                        });
+                    }
+                });
+                // Process deleted products
+                const deletedCount = yield this.pullDeletedProducts(localDb, remoteDataSource, lastSyncedAt, (downloadedBatch) => {
+                    // Progress callback for deleted products
+                    totalDownloaded += downloadedBatch;
+                    if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+                        this.mainWindow.webContents.send('sync-progress-update', {
+                            count: totalDownloaded,
+                            total: null,
+                        });
+                    }
+                });
+                totalDownloaded = updatedCount + deletedCount;
+                // Send final progress update
+                if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+                    this.mainWindow.webContents.send('sync-progress-update', {
+                        count: totalDownloaded,
+                        total: totalDownloaded, // Set total equal to count for completion
+                    });
+                }
                 this.notifySyncStatus({
                     status: 'completed',
                     direction: 'download',
@@ -656,7 +691,7 @@ class ProductSyncService {
      * @param lastSyncedAt Last sync timestamp
      * @returns Number of products downloaded
      */
-    pullUpdatedProducts(localDb, remoteDataSource, lastSyncedAt) {
+    pullUpdatedProducts(localDb, remoteDataSource, lastSyncedAt, progressCallback) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(`Fetching remote products not synced or updated after ${lastSyncedAt}`);
             let downloadedCount = 0;
@@ -743,6 +778,9 @@ class ProductSyncService {
                         yield this.bulkInsertProductsLocal(localDb, productsToInsert);
                         downloadedCount += productsToInsert.length;
                         console.log(`Bulk inserted ${productsToInsert.length} new products`);
+                        if (progressCallback) {
+                            progressCallback(productsToInsert.length);
+                        }
                         this.notifySyncStatus({
                             status: 'inprogress',
                             direction: 'download',
@@ -846,7 +884,7 @@ class ProductSyncService {
      * @param lastSyncedAt Last sync timestamp
      * @returns Number of products deleted locally
      */
-    pullDeletedProducts(localDb, remoteDataSource, lastSyncedAt) {
+    pullDeletedProducts(localDb, remoteDataSource, lastSyncedAt, progressCallback) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(`Fetching remote deleted products not synced or deleted after ${lastSyncedAt}`);
             let downloadedCount = 0;
@@ -941,6 +979,9 @@ class ProductSyncService {
                                 .andWhere('isModifiedLocally = 0 OR isModifiedLocally IS NULL') // Extra safety check
                                 .execute();
                             downloadedCount += idChunk.length;
+                            if (progressCallback) {
+                                progressCallback(idChunk.length);
+                            }
                         }
                     }
                     // Mark products as synced with this app

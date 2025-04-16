@@ -312,20 +312,60 @@ export class ProductSyncService {
 
       console.log(`Using last sync time: ${lastSyncedAt}`);
 
-      // Process updated and deleted products
+      // Send initial progress update - starting with 0 items
+      if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+        this.mainWindow.webContents.send('sync-progress-update', {
+          count: 0,
+          total: null,
+        });
+      }
+
+      // Track total downloaded items for progress updates
+      let totalDownloaded = 0;
+
+      // Process updated products
       const updatedCount = await this.pullUpdatedProducts(
         localDb,
         remoteDataSource,
-        lastSyncedAt
+        lastSyncedAt,
+        (downloadedBatch) => {
+          // Progress callback for updated products
+          totalDownloaded += downloadedBatch;
+          if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+            this.mainWindow.webContents.send('sync-progress-update', {
+              count: totalDownloaded,
+              total: null,
+            });
+          }
+        }
       );
 
+      // Process deleted products
       const deletedCount = await this.pullDeletedProducts(
         localDb,
         remoteDataSource,
-        lastSyncedAt
+        lastSyncedAt,
+        (downloadedBatch) => {
+          // Progress callback for deleted products
+          totalDownloaded += downloadedBatch;
+          if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+            this.mainWindow.webContents.send('sync-progress-update', {
+              count: totalDownloaded,
+              total: null,
+            });
+          }
+        }
       );
 
-      const totalDownloaded = updatedCount + deletedCount;
+      totalDownloaded = updatedCount + deletedCount;
+
+      // Send final progress update
+      if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+        this.mainWindow.webContents.send('sync-progress-update', {
+          count: totalDownloaded,
+          total: totalDownloaded, // Set total equal to count for completion
+        });
+      }
 
       this.notifySyncStatus({
         status: 'completed',
@@ -394,8 +434,6 @@ export class ProductSyncService {
   public stop(): void {
     this.stopAutoSync();
   }
-
-
 
   /**
    * Upload modified products to remote database using bulk operations
@@ -792,7 +830,8 @@ export class ProductSyncService {
   private async pullUpdatedProducts(
     localDb: DataSource,
     remoteDataSource: DataSource,
-    lastSyncedAt: Date
+    lastSyncedAt: Date,
+    progressCallback?: (count: number) => void
   ): Promise<number> {
     console.log(
       `Fetching remote products not synced or updated after ${lastSyncedAt}`
@@ -916,6 +955,10 @@ export class ProductSyncService {
           downloadedCount += productsToInsert.length;
           console.log(`Bulk inserted ${productsToInsert.length} new products`);
 
+          if (progressCallback) {
+            progressCallback(productsToInsert.length);
+          }
+
           this.notifySyncStatus({
             status: 'inprogress',
             direction: 'download',
@@ -1038,7 +1081,8 @@ export class ProductSyncService {
   private async pullDeletedProducts(
     localDb: DataSource,
     remoteDataSource: DataSource,
-    lastSyncedAt: Date
+    lastSyncedAt: Date,
+    progressCallback?: (count: number) => void
   ): Promise<number> {
     console.log(
       `Fetching remote deleted products not synced or deleted after ${lastSyncedAt}`
@@ -1183,6 +1227,10 @@ export class ProductSyncService {
               .execute();
 
             downloadedCount += idChunk.length;
+
+            if (progressCallback) {
+              progressCallback(idChunk.length);
+            }
           }
         }
 

@@ -30,8 +30,16 @@ class FirstRunService {
             if (firstRun) {
                 console.log('First run detected - performing initial data sync');
                 // Wait briefly for the UI to fully initialize
-                setTimeout(() => this.performInitialSync(), 1500);
+                setTimeout(() => this.sendToAngular('show-first-run-dialog'), 1500);
             }
+        }));
+        // Set up IPC handlers for Angular communication
+        const { ipcMain } = require('electron');
+        ipcMain.on('first-run-sync-start', () => __awaiter(this, void 0, void 0, function* () {
+            yield this.startProductSync();
+        }));
+        ipcMain.on('first-run-sync-skip', () => __awaiter(this, void 0, void 0, function* () {
+            yield this.markFirstRunComplete();
         }));
     }
     /**
@@ -56,144 +64,67 @@ class FirstRunService {
         return __awaiter(this, void 0, void 0, function* () {
             const userDataPath = electron_1.app.getPath('userData');
             const firstRunFlagPath = path.join(userDataPath, '.first-run-complete');
-            console.log(firstRunFlagPath);
             // Create the flag file with current timestamp
             fs.writeFileSync(firstRunFlagPath, new Date().toISOString());
             console.log('First run completed - created flag file');
         });
     }
     /**
-     * Perform initial data synchronization using native dialogs
+     * Send message to Angular application
      */
-    performInitialSync() {
+    sendToAngular(channel, data = {}) {
+        if (this.browserWindow && !this.browserWindow.isDestroyed()) {
+            this.browserWindow.webContents.send(channel, data);
+            '';
+        }
+    }
+    /**
+     * Start the product sync process
+     */
+    startProductSync() {
         return __awaiter(this, void 0, void 0, function* () {
-            // Guard against multiple syncs
-            if (this.syncInProgress) {
-                return;
-            }
-            console.log('Performing initial data sync...');
-            // Show an informational dialog to the user
-            const startDialog = yield electron_1.dialog.showMessageBox(this.browserWindow, {
-                type: 'info',
-                title: 'First Run Setup',
-                message: 'Welcome to the application!',
-                detail: 'We need to download initial data. This may take several minutes. Would you like to proceed?',
-                buttons: ['Download Data', 'Skip'],
-                defaultId: 0,
-                cancelId: 1,
-            });
-            // If user chooses to skip, we'll mark first run as complete anyway
-            if (startDialog.response === 1) {
-                console.log('User chose to skip initial data download');
-                yield this.markFirstRunComplete();
-                return;
-            }
             try {
-                // Create a simple progress window
-                const progressWindow = new electron_1.BrowserWindow({
-                    parent: this.browserWindow,
-                    width: 400,
-                    height: 250,
-                    frame: true,
-                    resizable: false,
-                    minimizable: false,
-                    maximizable: false,
-                    closable: false,
-                    alwaysOnTop: true,
-                    webPreferences: {
-                        nodeIntegration: true,
-                        contextIsolation: false,
-                        devTools: false,
-                    },
-                });
-                // Load a minimal HTML page with progress message and three-dot loading animation
-                progressWindow.loadURL('data:text/html,' +
-                    encodeURIComponent(`
-<html>
-  <head>
-    <style>
-      body {
-        font-family: -apple-system, system-ui, sans-serif;
-        padding: 20px;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: calc(100vh - 40px);
-        background-color: #f8f8f8;
-      }
-      h3 {
-        margin-bottom: 20px;
-        color: #333;
-      }
-      p {
-        margin-top: 15px;
-        color: #666;
-      }
-      .loading:after {
-        content: '.';
-        animation: dots 1.5s steps(5, end) infinite;
-      }
-      
-      @keyframes dots {
-        0%, 20% {
-          color: rgba(0,0,0,0);
-          text-shadow:
-            .25em 0 0 rgba(0,0,0,0),
-            .5em 0 0 rgba(0,0,0,0);
-        }
-        40% {
-          color: #666;
-          text-shadow:
-            .25em 0 0 rgba(0,0,0,0),
-            .5em 0 0 rgba(0,0,0,0);
-        }
-        60% {
-          text-shadow:
-            .25em 0 0 #666,
-            .5em 0 0 rgba(0,0,0,0);
-        }
-        80%, 100% {
-          text-shadow:
-            .25em 0 0 #666,
-            .5em 0 0 #666;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <h3>Downloading Data</h3>
-    <p>Initial data synchronization in progress<span class="loading"></span></p>
-  </body>
-</html>
-`));
-                progressWindow.setMenu(null);
-                progressWindow.center();
+                this.syncInProgress = true;
+                // Set up IPC handler for sync progress
+                const { ipcMain } = require('electron');
+                let downloadedCount = 0;
+                // Track progress
+                const progressHandler = (event, data) => {
+                    if (data.count) {
+                        downloadedCount += data.count;
+                        // Forward progress to Angular
+                        this.sendToAngular('first-run-sync-progress', {
+                            count: downloadedCount,
+                            total: data.total,
+                        });
+                    }
+                };
+                // Listen for sync progress events from product sync service
+                ipcMain.on('sync-progress', progressHandler);
                 // Trigger a full sync using the product sync service
                 const syncResult = yield product_sync_service_1.default.pullRemoteProducts();
-                progressWindow.destroy();
+                // Remove IPC listener
+                ipcMain.removeListener('sync-progress', progressHandler);
+                // Send final count
+                this.sendToAngular('first-run-sync-progress', {
+                    count: syncResult.downloaded,
+                    total: syncResult.downloaded,
+                    complete: true
+                });
                 // Mark first run as complete
                 yield this.markFirstRunComplete();
-                // Show completion dialog
-                yield electron_1.dialog.showMessageBox(this.browserWindow, {
-                    type: 'info',
-                    title: 'Setup Complete',
-                    message: 'Initial data synchronization completed successfully.',
-                    detail: `Downloaded ${syncResult.downloaded} products. You can now start using the application.`,
-                    buttons: ['OK'],
+                // Signal completion to Angular
+                this.sendToAngular('first-run-sync-complete', {
+                    success: true,
+                    downloaded: syncResult.downloaded
                 });
                 console.log('Initial data sync completed successfully');
             }
             catch (error) {
                 console.error('Error during initial data sync:', error);
-                // Show error dialog
-                yield electron_1.dialog.showMessageBox(this.browserWindow, {
-                    type: 'error',
-                    title: 'Sync Error',
-                    message: 'Failed to perform initial data synchronization',
-                    detail: error.message || 'An unknown error occurred.',
-                    buttons: ['OK'],
+                // Signal error to Angular
+                this.sendToAngular('first-run-sync-error', {
+                    message: error.message || 'An unknown error occurred'
                 });
             }
             finally {
@@ -202,15 +133,7 @@ class FirstRunService {
         });
     }
     /**
-     * Manually trigger initial sync - useful for retry from UI
-     */
-    triggerInitialSync() {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield this.performInitialSync();
-        });
-    }
-    /**
-     * Reset the first run state - useful for debugging or forcing a resync
+     * Reset the first run state - useful for debugging
      */
     resetFirstRunState() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -219,22 +142,10 @@ class FirstRunService {
             if (fs.existsSync(firstRunFlagPath)) {
                 fs.unlinkSync(firstRunFlagPath);
                 console.log('First run flag reset - next app start will trigger initial sync');
-                yield electron_1.dialog.showMessageBox(this.browserWindow, {
-                    type: 'info',
-                    title: 'First Run Reset',
-                    message: 'First run state has been reset.',
-                    detail: 'The next time you start the application, it will perform initial setup again.',
-                    buttons: ['OK'],
-                });
+                this.sendToAngular('first-run-reset-success');
             }
             else {
-                yield electron_1.dialog.showMessageBox(this.browserWindow, {
-                    type: 'info',
-                    title: 'First Run Reset',
-                    message: 'First run is already pending.',
-                    detail: 'The application is already set to perform initial setup on next start.',
-                    buttons: ['OK'],
-                });
+                this.sendToAngular('first-run-already-pending');
             }
         });
     }

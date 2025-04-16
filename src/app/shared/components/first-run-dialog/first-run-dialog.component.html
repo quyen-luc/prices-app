@@ -1,0 +1,66 @@
+<div class="dialog-container">
+    <div class="dialog-header">
+      <h2 class="dialog-title">First Time Synchronization </h2>
+    </div>
+    
+    <!-- Welcome content -->
+    <div class="dialog-content">
+      <p>We need to download initial data from the server. This may take several minutes depending on your connection speed.</p>
+      <p>Would you like to proceed with the download now?</p>
+    </div>
+    
+    <!-- Progress content -->
+    <div class="dialog-content" *ngIf="state === 'progress'">
+      <p>Initial data synchronization in progress...</p>
+      
+      <div class="progress-info">
+        <div *ngIf="progress.total">
+          Downloaded {{ progress.count }} of {{ progress.total }} items
+        </div>
+        <div *ngIf="!progress.total">
+          Downloaded {{ progress.count }} items
+        </div>
+      </div>
+      
+      <div class="loading-animation">
+        <div class="loading-dots">
+          <span>.</span><span>.</span><span>.</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Complete content -->
+    <div class="dialog-content" *ngIf="state === 'complete'">
+      <div *ngIf="customMessage">
+        <p>{{ customMessage }}</p>
+      </div>
+      
+      <div *ngIf="!customMessage">
+        <p>Initial data synchronization completed successfully.</p>
+        <p>Downloaded {{ downloadedCount }} products. You can now start using the application.</p>
+      </div>
+    </div>
+    
+    <!-- Error content -->
+    <div class="dialog-content" *ngIf="state === 'error'">
+      <p>Failed to perform initial data synchronization</p>
+      <p class="error-message">{{ errorMessage }}</p>
+    </div>
+    
+    <!-- Dialog actions (buttons) -->
+    <div class="dialog-actions">
+      <!-- Welcome buttons -->
+       <span style="display:none">{{state}}</span>
+      <ng-container *ngIf="state === 'welcome'">
+        <button class="btn btn-secondary" (click)="skipSync()">Skip for Now</button>
+        <button class="btn btn-primary" (click)="startSync()">Download Data</button>
+      </ng-container>
+      
+      <!-- Progress has no buttons (non-closable) -->
+      
+      <!-- Complete/Error buttons -->
+      <ng-container *ngIf="state === 'complete' || state === 'error'">
+        <button class="btn btn-primary" (click)="finishProcess()">close</button>
+      </ng-container>
+    </div>
+  </div>

@@ -1,0 +1,148 @@
+/* filepath: c:\Users\quyen.luc\Documents\prices-app\src\app\shared\components\first-run-dialog\first-run-dialog.component.scss */
+.dialog-container {
+    display: flex;
+    flex-direction: column;
+    width: 450px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 
+                0 24px 38px 3px rgba(0, 0, 0, 0.14), 
+                0 9px 46px 8px rgba(0, 0, 0, 0.12);
+    background-color: white;
+  }
+  
+  .dialog-header {
+    padding: 16px 24px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .dialog-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: rgba(0, 0, 0, 0.87);
+  }
+  
+  .dialog-content {
+    padding: 24px;
+    color: rgba(0, 0, 0, 0.6);
+    min-height: 150px;
+    
+    p {
+      margin-top: 0;
+      margin-bottom: 16px;
+      line-height: 1.5;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 24px;
+    border-top: 1px solid #e0e0e0;
+    gap: 8px;
+  }
+  
+  .btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-weight: 500;
+    outline: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    color: white;
+  
+    &:hover {
+      background-color: #0069d9;
+    }
+  
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    }
+  }
+  
+  .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+  
+    &:hover {
+      background-color: #5a6268;
+    }
+  
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.25);
+    }
+  }
+  
+  // Progress styles
+  .progress-info {
+    margin: 15px 0;
+    color: #0066cc;
+    font-size: 0.9em;
+    text-align: center;
+  }
+  
+  .loading-animation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .loading-dots {
+    text-align: center;
+  }
+  
+  .loading-dots span {
+    display: inline-block;
+    animation: loading 1.4s infinite;
+    font-size: 2em;
+  }
+  
+  .loading-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .loading-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  @keyframes loading {
+    0% {
+      opacity: 0.2;
+      transform: translateY(0);
+    }
+    20% {
+      opacity: 1;
+      transform: translateY(-5px);
+    }
+    40% {
+      opacity: 0.2;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0.2;
+      transform: translateY(0);
+    }
+  }
+  
+  // Error message style
+  .error-message {
+    color: #d32f2f;
+    background-color: #ffebee;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: monospace;
+    word-break: break-word;
+  }
