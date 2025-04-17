@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 import * as dns from 'dns';
 import { RemoteDatabase } from '../database/remote-database';
 import * as connectionEvents from '../constants/connection-events';
@@ -20,6 +20,10 @@ export class ConnectionMonitor {
   private mainWindow: Electron.BrowserWindow | null = null;
 
   private constructor() {}
+
+  setWindow(window: BrowserWindow): void {
+    this.mainWindow = window;
+  }
 
   /**
    * Get singleton instance

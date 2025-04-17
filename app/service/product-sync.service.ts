@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 import { LessThan } from 'typeorm';
 import * as connectionEvents from '../constants/connection-events';
 import { SYNC_EVENT } from '../constants/sync-event';
@@ -24,6 +24,10 @@ export class ProductSyncService {
       ProductSyncService.instance = new ProductSyncService();
     }
     return ProductSyncService.instance;
+  }
+
+  setWindow(window: BrowserWindow): void {
+    this.mainWindow = window;
   }
 
   public init(mainWindow: Electron.BrowserWindow): void {

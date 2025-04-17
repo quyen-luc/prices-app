@@ -44,6 +44,7 @@ export class DialogService {
     const componentFactory =
       this.componentFactoryResolver.resolveComponentFactory(component);
     const componentRef = componentFactory.create(this.injector);
+    componentRef.changeDetectorRef.detectChanges();
 
     // Set dialog result handler
     // Look for any output property that might be used to close/return data

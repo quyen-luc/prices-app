@@ -3,19 +3,71 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { registerIpcHandlers } from './handlers/product.handlers';
 import { connectToRemoteDb } from './database/remote-database';
-import {
-  initializeDatabase,
-} from './database/database';
+import { initializeDatabase } from './database/database';
 
-import connectionMonitorService, { ConnectionMonitor } from './service/connection-monitor.service';
+import connectionMonitorService from './service/connection-monitor.service';
 import productSyncService from './service/product-sync.service';
 import { AppIdentityService } from './config/app-identity.service';
 import firstRunService from './service/first-run.service';
 
-
 let win: BrowserWindow | null = null;
 const args = process.argv.slice(1),
   serve = args.some((val) => val === '--serve');
+
+// Add flag to track if services are initialized
+let servicesInitialized = false;
+
+/**
+ * Initialize application services
+ * @param window The browser window to associate with services
+ */
+async function initializeServices(window: BrowserWindow): Promise<void> {
+  if (servicesInitialized) {
+    // If services are already initialized, just update window references
+    connectionMonitorService.setWindow(window);
+    productSyncService.setWindow(window);
+    firstRunService.setWindow(window);
+    return;
+  }
+
+  try {
+    await initializeDatabase();
+  } catch (error) {
+    dialog.showErrorBox(
+      'Database Error',
+      `Failed to initialize database: ${error.message}\n\nThe application will attempt to reconnect automatically.`
+    );
+  }
+
+  try {
+    registerIpcHandlers();
+    connectToRemoteDb();
+  } catch (error) {
+    console.error('Failed to initialize services:', error);
+    dialog.showErrorBox('Initialization Error', 'Failed to initialize services');
+  }
+
+  // Initialize connection monitoring
+  connectionMonitorService.init(window);
+
+  // Initialize product sync service
+  productSyncService.init(window);
+  firstRunService.init(window);
+
+  servicesInitialized = true;
+}
+
+/**
+ * Properly clean up services when application is quitting
+ */
+function cleanupServices(): void {
+  if (servicesInitialized) {
+    connectionMonitorService.stop();
+    productSyncService.stop();
+    firstRunService.stop();
+    servicesInitialized = false;
+  }
+}
 
 async function createWindow(): Promise<BrowserWindow> {
   const size = screen.getPrimaryDisplay().workAreaSize;
@@ -35,23 +87,8 @@ async function createWindow(): Promise<BrowserWindow> {
 
   AppIdentityService.getInstance();
 
-  try {
-    await initializeDatabase();
-  } catch (error) {
-    dialog.showErrorBox(
-      'Database Error',
-      `Failed to initialize database: ${error.message}\n\nThe application will attempt to reconnect automatically.`
-    );
-  }
-
-
-  try {
-    registerIpcHandlers();
-    connectToRemoteDb();
-  } catch (error) {
-    console.error('Failed to initialize services:', error);
-    window.Error('Failed to initialize services');
-  }
+  // Initialize services
+  await initializeServices(win);
 
   if (serve) {
     const debug = require('electron-debug');
@@ -72,52 +109,57 @@ async function createWindow(): Promise<BrowserWindow> {
     win.loadURL(url.href);
   }
 
-
-  // Initialize connection monitoring
-  connectionMonitorService.init(win);
-
-  // Initialize product sync service
-  productSyncService.init(win);
-  firstRunService.init(win);
-
-  // Emitted when the window is closed.
-  win.on('closed', () => {
-    // Dereference the window object, usually you would store window
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    connectionMonitorService.stop();
-    productSyncService.stop();
-    firstRunService.stop();
-    win = null;
-  });
+  // Modified behavior for macOS
+  if (process.platform === 'darwin') {
+    // On macOS, use 'close' event instead of 'closed' to handle window close
+    win.on('close', (event) => {
+      // Prevent the window from actually closing
+      event.preventDefault();
+      
+      // Just hide the window instead of closing it
+      win.hide();
+    });
+  } else {
+    // On Windows/Linux, handle 'closed' event normally
+    win.on('closed', () => {
+      win = null;
+    });
+  }
 
   return win;
 }
 
 try {
-  // This method will be called when Electron has finished
-  // initialization and is ready to create browser windows.
-  // Some APIs can only be used after this event occurs.
-  // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
+  // This method will be called when Electron has finished initialization
   app.on('ready', () => setTimeout(createWindow, 400));
 
-  // Quit when all windows are closed.
+  // Handle before-quit event to properly clean up
+  app.on('before-quit', () => {
+    // Allow the window to close normally during quit
+    if (win && process.platform === 'darwin') {
+      win.removeAllListeners('close');
+    }
+    
+    // Clean up services
+    cleanupServices();
+  });
+
+  // Quit when all windows are closed (except on macOS)
   app.on('window-all-closed', () => {
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
       app.quit();
     }
   });
 
-  app.on('activate', () => {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
+  app.on('activate', async () => {
+    // On macOS, recreate window when dock icon is clicked and no windows open
     if (win === null) {
-      createWindow();
+      win = await createWindow();
+    } else if (win && !win.isVisible()) {
+      // If window exists but is hidden, show it
+      win.show();
     }
   });
 } catch (e) {
-  // Catch Error
-  // throw e;
+  console.error('Application initialization error:', e);
 }

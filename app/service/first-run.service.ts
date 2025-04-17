@@ -7,6 +7,11 @@ class FirstRunService {
   private browserWindow: BrowserWindow = null;
   private syncInProgress = false;
 
+  
+  setWindow(window: BrowserWindow): void {
+    this.browserWindow = window;
+  }
+
   /**
    * Initialize the first run service
    * @param window The main browser window
