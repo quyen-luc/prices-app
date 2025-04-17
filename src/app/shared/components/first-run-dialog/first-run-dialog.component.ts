@@ -8,7 +8,6 @@ import {
 import { DialogBaseComponent } from '../../abstracts/dialog-base.component';
 import { Subscription } from 'rxjs';
 import { ElectronService } from '../../../core/services';
-import { ProductSyncService } from '../../../../../app/service/product-sync.service';
 import { FirstRunService } from '../../../core/services/first-run.service';
 
 /**

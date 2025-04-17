@@ -29,17 +29,6 @@
       </div>
     </div>
     
-    <!-- Complete content -->
-    <div class="dialog-content" *ngIf="state === 'complete'">
-      <div *ngIf="customMessage">
-        <p>{{ customMessage }}</p>
-      </div>
-      
-      <div *ngIf="!customMessage">
-        <p>Initial data synchronization completed successfully.</p>
-        <p>Downloaded {{ downloadedCount }} products. You can now start using the application.</p>
-      </div>
-    </div>
     
     <!-- Error content -->
     <div class="dialog-content" *ngIf="state === 'error'">

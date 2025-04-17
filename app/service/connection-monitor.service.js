@@ -30,6 +30,9 @@ class ConnectionMonitor {
         this.reconnectTimer = null;
         this.mainWindow = null;
     }
+    setWindow(window) {
+        this.mainWindow = window;
+    }
     /**
      * Get singleton instance
      */

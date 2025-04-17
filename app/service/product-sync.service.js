@@ -45,6 +45,9 @@ class ProductSyncService {
         }
         return ProductSyncService.instance;
     }
+    setWindow(window) {
+        this.mainWindow = window;
+    }
     init(mainWindow) {
         this.mainWindow = mainWindow;
         this.setupIpcHandlers();
